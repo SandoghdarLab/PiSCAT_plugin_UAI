@@ -1,2 +1,0 @@
-from .analysis_protein_videos_anomaly import anomaly_protein_analysis
-from .analysis_protein_videos_dnn_anomaly import dnn_anomaly_protein_analysis
