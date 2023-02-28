@@ -17,7 +17,7 @@ Since this is a plugin for PiSCAT, first, you should install PiSCAT (see [PiSCAT
  2. To add PiSCAT Plugins, enter the following command in the console in the same python environment you install piscat:
  
  ```
- python -m piscat.Plugins UAI
+ python -m piscat.Plugin UAI
  ```
  
 # Running PiSCAT plugin Tutorials
