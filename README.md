@@ -1,4 +1,4 @@
-# PiSCAT_plugins
+# PiSCAT UAI plugin
 
 The new PiSCAT plugin, unsupervised anomaly identification (UAI), uses a deep neural network and classical machine learning to combine spatial-temporal features to track particles with low SNR in a background with noise structures similar to real iSCAT PSF (iPSF). The UAI deep neural networks are robust and fully automated algorithms that manipulate features of iPSFs and background speckles to the domain that can separate the footprint of the iPSF from background speckles. Since this method is unsupervised, it can be used for different applications with only fine-tuning of the hyperparameters. This method illustrates remarkable results in pushing the sensitivity limit in label-free detection of single proteins below 10 kDa.
 
