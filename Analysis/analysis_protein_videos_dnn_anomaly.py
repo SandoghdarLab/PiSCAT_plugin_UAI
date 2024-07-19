@@ -284,9 +284,12 @@ def dnn_anomaly_protein_analysis(paths, video_names, hyperparameters, flags, nam
                     t_filters = temporal_filtering.TemporalFilter(video=RVideo_PN_FPN,
                                                                   batchSize=hyperparameters['batch_size'])
 
-                    all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(df_PSFs=df_PSFs_link,
-                                                                                threshold=hyperparameters[
-                                                                                    'min_V_shape_width'])
+                    all_trajectories, df_PSFs_t_filter, his_all_particles = t_filters.v_trajectory(
+                        df_PSFs=df_PSFs_link,
+                        threshold_min=hyperparameters["min_V_shape_width"],
+                        threshold_max=hyperparameters["max_V_shape_width"],
+                    )
+
                     PSFs_Particels_num['#Particles_after_V_shapeFilter'] = linking_.trajectory_counter(df_PSFs_t_filter)
 
                     if len(all_trajectories) > 0:

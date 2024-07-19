@@ -64,7 +64,7 @@ class BinaryToiSCATLocalization:
             else:
                 print("\n---start area local_minima without Parallel---")
                 local_minima_ = [local_minima(self.blure_video[f_], allow_borders=False, indices=True) for f_ in tqdm(range(self.blure_video.shape[0]))]
-            df_pos = self.data_handeling(local_minima_)
+            df_pos = self.data_handling(local_minima_)
             self.df_pos = self.remove_over_lap_localization(df_PSFs=df_pos)
         elif df_postion is not None:
             self.df_pos = df_postion
@@ -75,34 +75,41 @@ class BinaryToiSCATLocalization:
     def _kernel_local_minima(self, f_):
         return local_minima(self.blure_video[f_], indices=True, allow_borders=False)
 
-    def data_handeling(self, local_minima_):
-        local_minima_array = np.asarray(local_minima_)
+    def data_handling(self, local_minima_):
         list_x = []
         list_y = []
         list_f = []
         list_center_intensity = []
         list_dnn_center_intensity = []
 
-        for r_ in range(local_minima_array.shape[0]):
-            tmp_ = local_minima_array[r_, :]
-            X = tmp_[1].tolist()
-            Y = tmp_[0].tolist()
-            for x_, y_ in zip(X, Y):
-                list_center_intensity = self.blure_video[r_, y_, x_]
+        for r_, local_minima in enumerate(local_minima_):
+            y_coords, x_coords = local_minima
+
+            if len(y_coords) == 0:  # Skip empty frames
+                continue
+
+            for x_, y_ in zip(x_coords, y_coords):
+                center_intensity = self.blure_video[r_, y_, x_]
+                list_center_intensity.append(center_intensity)
+
                 if self.DNN_Residual is not None:
-                    list_dnn_center_intensity = self.DNN_Residual[r_, y_, x_]
+                    dnn_center_intensity = self.DNN_Residual[r_, y_, x_]
                 else:
-                    try:
-                        list_dnn_center_intensity = [None for _ in len(list_center_intensity)]
-                    except:
-                        list_dnn_center_intensity = None
+                    dnn_center_intensity = None
+
+                list_dnn_center_intensity.append(dnn_center_intensity)
                 list_x.append(x_)
                 list_y.append(y_)
                 list_f.append(r_)
 
-        dic_pos = {'y': list_y, 'x': list_x, 'frame': list_f,
-                   'center_intensity': list_center_intensity,
-                   'sigma': self.sigma, 'dnn_contrast': list_dnn_center_intensity}
+        dic_pos = {
+            'y': list_y,
+            'x': list_x,
+            'frame': list_f,
+            'center_intensity': list_center_intensity,
+            'sigma': [self.sigma] * len(list_x),
+            'dnn_contrast': list_dnn_center_intensity
+        }
 
         df_pos = pd.DataFrame.from_dict(dic_pos)
         return df_pos
